@@ -7,7 +7,10 @@ const int switches[] = {PD1, PD0};
 bool switch_states[] = {true, true};
 
 const int btns[] = {PD4, PC6, PD7, PE6, PB4, PB5, PB6, PB7, PD6, PC7};
-Keystroke *switch_strokes, *btn_strokes[10];
+Keystroke *switch_strokes[num_switches], *btn_strokes[num_btns];
+
+int ss1_arr[] = {KEY_LEFT_ALT, 'm'}, ss2_arr[] = {KEY_LEFT_ALT, 'c'};
+int bs1_arr[] = {KEY_F1}, bs2_arr[] = {KEY_F2}, bs3_arr[] = {KEY_F4};
 
 void toggle_input(const int input_array[], int array_size) {
 
@@ -22,6 +25,9 @@ void toggle_input(const int input_array[], int array_size) {
 
 void setup() {
   Keyboard.begin();
+
+  switch_strokes[0] = new Keystroke(ss1_arr, 2);
+  switch_strokes[1] = new Keystroke(ss2_arr, 2);
 
   for (int i = 0; i < num_switches; i++) {
     pinMode(switches[i], INPUT_PULLUP);
