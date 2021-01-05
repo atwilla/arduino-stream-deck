@@ -30,9 +30,11 @@ void toggle_input(const int input_array[], int array_size) {
 
 void setup() {
   Keyboard.begin();
-
+      
   switch_strokes[0] = new Keystroke(ss1_arr, 2);
   switch_strokes[1] = new Keystroke(ss2_arr, 2);
+
+  btn_strokes[0] = new Keystroke(bs1_arr, 2);
 
   for (int i = 0; i < num_switches; i++) {
     pinMode(switches[i], INPUT_PULLUP);
@@ -57,39 +59,24 @@ void loop() {
       }
     }*/
   }
-  
-  /*if (digitalRead(mic_switch) == LOW) {
-
-    // mic_state checks ensure keystroke only sent on change of states.
-    if (!mic_state) {
-      mic_state = true;
-      //toggle_input(keystrokes[0], 2);
-    }
-    
-  } else {
-
-    if (mic_state) {
-      mic_state = false;
-      //toggle_input(keystrokes[0], 2);
-    }
-  }
-
-  if (digitalRead(cam_switch) == LOW) {
-
-    if (!cam_state) {
-      cam_state = true;
-      //toggle_input(keystrokes[1], 2);
-    }
-    
-  } else {
-
-    if (cam_state) {
-      cam_state = false;
-      //toggle_input(keystrokes[1], 2);
-    }
-  }*/
 
   // for loop for button inputs here
+
+  for (int i = 0; i < num_btns; i++) {
+
+    if (!digitalRead(btns[i])) {
+
+      for (int j = 0; j < btn_strokes[i]->num_keys; j++) {
+        Keyboard.press(btn_strokes[i]->keys_array[j]);
+      }
+      
+    } else {
+
+      for (int j = 0; j < btn_strokes[i]->num_keys; j++) {
+        Keyboard.release(btn_strokes[i]->keys_array[j]);
+      }
+    }
+  }
 
   //delay(10);
 }
