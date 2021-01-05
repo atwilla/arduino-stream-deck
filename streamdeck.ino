@@ -2,8 +2,9 @@
 
 bool mic_state = true, cam_state = true;
 const int mic_switch = PD1, cam_switch = PD0;
+const int num_buttons = 10;
 const int pins[] = {PD4, PC6, PD7, PE6, PB4, PB5, PB6, PB7, PD6, PC7};
-const int keystrokes[3][2] = {{KEY_F1, 'm'}, {KEY_F1, 'c'}, {KEY_F2, 'V'}};
+const int keystrokes[3][2] = {{KEY_LEFT_ALT, 'm'}, {KEY_LEFT_ALT, 'c'}, {KEY_F2, 'V'}};
 
 void toggle_input(const int input_array[], int array_size) {
 
@@ -29,20 +30,13 @@ void loop() {
     if (!mic_state) {
       mic_state = true;
       toggle_input(keystrokes[0], 2);
-      /*Keyboard.press(KEY_F1);
-      Keyboard.press('m');
-      Keyboard.release(KEY_F1);
-      Keyboard.release('m');*/
     }
     
   } else {
 
     if (mic_state) {
       mic_state = false;
-      Keyboard.press(KEY_F1);
-      Keyboard.press('m');
-      Keyboard.release(KEY_F1);
-      Keyboard.release('m');
+      toggle_input(keystrokes[0], 2);
     }
   }
 
@@ -50,21 +44,31 @@ void loop() {
 
     if (!cam_state) {
       cam_state = true;
-      Keyboard.press(KEY_F1);
-      Keyboard.press('c');
-      Keyboard.release(KEY_F1);
-      Keyboard.release('c');
+      toggle_input(keystrokes[1], 2);
     }
     
   } else {
 
     if (cam_state) {
       cam_state = false;
-      Keyboard.press(KEY_F1);
-      Keyboard.press('c');
-      Keyboard.release(KEY_F1);
-      Keyboard.release('c');
+      toggle_input(keystrokes[1], 2);
     }
+  }
+
+  for(int i = 2; i < num_buttons; i++) {
+
+    if (digitalRead(pins[i]) == LOW) {
+
+      for (int j = 0; j < 2; j++) {
+        Keyboard.press(keystrokes[i][j]);
+      }
+        
+    } else {
+
+      for (int j = 0; j < 2; j++) {
+        Keyboard.release(keystrokes[i][j]);
+      }
+    } 
   }
 
   //delay(10);
