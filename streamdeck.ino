@@ -1,10 +1,13 @@
 #include "Keyboard.h"
+#include "Keystroke.h"
 
-bool mic_state = true, cam_state = true;
-const int mic_switch = PD1, cam_switch = PD0;
-const int num_buttons = 10;
-const int pins[] = {PD4, PC6, PD7, PE6, PB4, PB5, PB6, PB7, PD6, PC7};
-const int keystrokes[3][2] = {{KEY_LEFT_ALT, 'm'}, {KEY_LEFT_ALT, 'c'}, {KEY_F2, 'V'}};
+const int num_switches = 2, num_btns = 10;
+
+const int switches[] = {PD1, PD0};
+bool switch_states[] = {true, true};
+
+const int btns[] = {PD4, PC6, PD7, PE6, PB4, PB5, PB6, PB7, PD6, PC7};
+Keystroke *switch_strokes, *btn_strokes[10];
 
 void toggle_input(const int input_array[], int array_size) {
 
@@ -19,24 +22,47 @@ void toggle_input(const int input_array[], int array_size) {
 
 void setup() {
   Keyboard.begin();
-  pinMode(mic_switch, INPUT_PULLUP);
+
+  for (int i = 0; i < num_switches; i++) {
+    pinMode(switches[i], INPUT_PULLUP);
+  }
+
+  for (int i = 0; i < num_btns; i++) {
+    pinMode(btns[i], INPUT_PULLUP);
+  }
 }
 
 void loop() {
 
-  if (digitalRead(mic_switch) == LOW) {
+  for (int i = 0; i < num_switches; i++) {
+
+    if (digitalRead(switches[i]) == LOW) {
+
+      if (!switch_states[i]) {
+        switch_states[i] = true;
+      }
+      
+    } else {
+
+      if (switch_states[i]) {
+        switch_states[i] = false;
+      }
+    }
+  }
+  
+  /*if (digitalRead(mic_switch) == LOW) {
 
     // mic_state checks ensure keystroke only sent on change of states.
     if (!mic_state) {
       mic_state = true;
-      toggle_input(keystrokes[0], 2);
+      //toggle_input(keystrokes[0], 2);
     }
     
   } else {
 
     if (mic_state) {
       mic_state = false;
-      toggle_input(keystrokes[0], 2);
+      //toggle_input(keystrokes[0], 2);
     }
   }
 
@@ -44,32 +70,18 @@ void loop() {
 
     if (!cam_state) {
       cam_state = true;
-      toggle_input(keystrokes[1], 2);
+      //toggle_input(keystrokes[1], 2);
     }
     
   } else {
 
     if (cam_state) {
       cam_state = false;
-      toggle_input(keystrokes[1], 2);
+      //toggle_input(keystrokes[1], 2);
     }
-  }
+  }*/
 
-  for(int i = 2; i < num_buttons; i++) {
-
-    if (digitalRead(pins[i]) == LOW) {
-
-      for (int j = 0; j < 2; j++) {
-        Keyboard.press(keystrokes[i][j]);
-      }
-        
-    } else {
-
-      for (int j = 0; j < 2; j++) {
-        Keyboard.release(keystrokes[i][j]);
-      }
-    } 
-  }
+  // for loop for button inputs here
 
   //delay(10);
 }
