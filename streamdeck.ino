@@ -4,13 +4,18 @@
 const int num_switches = 2, num_btns = 10;
 
 const int switches[] = {PD1, PD0};
-bool switch_states[] = {true, true};
+bool switch_states[] = {false, false};
 
 const int btns[] = {PD4, PC6, PD7, PE6, PB4, PB5, PB6, PB7, PD6, PC7};
 Keystroke *switch_strokes[num_switches], *btn_strokes[num_btns];
 
-int ss1_arr[] = {KEY_LEFT_ALT, 'm'}, ss2_arr[] = {KEY_LEFT_ALT, 'c'};
-int bs1_arr[] = {KEY_F1}, bs2_arr[] = {KEY_F2}, bs3_arr[] = {KEY_F4};
+// Doing it this way may seem repetitive but allows for more complex keystrokes.
+int ss1_arr[] = {KEY_LEFT_ALT, '1'}, ss2_arr[] = {KEY_LEFT_ALT, '2'};
+int bs1_arr[] = {KEY_LEFT_ALT, 'm'}, bs2_arr[] = {KEY_LEFT_ALT, 'c'};
+int bs3_arr[] = {KEY_F1}, bs4_arr[] = {KEY_F2}, bs5 = {KEY_F4};
+int bs6_arr[] = {KEY_LEFT_ALT, '3'}, bs7_arr[] = {KEY_LEFT_ALT, '4'};
+int bs8_arr[] = {KEY_LEFT_ALT, '5'}, bs9_arr[] = {KEY_LEFT_ALT, '6'};
+int bs10_arr[] = {KEY_LEFT_ALT, '7'};
 
 void toggle_input(const int input_array[], int array_size) {
 
@@ -42,18 +47,15 @@ void loop() {
 
   for (int i = 0; i < num_switches; i++) {
 
-    if (digitalRead(switches[i]) == LOW) {
-
-      if (!switch_states[i]) {
-        switch_states[i] = true;
-      }
-      
-    } else {
+    if ((!digitalRead(switches[i]) && !switch_states[i]) || (digitalRead(switches[i]) && switch_states[i])) {
+      switch_states[i] = !switch_states[i];
+      toggle_input(switch_strokes[i]->keys_array, switch_strokes[i]->num_keys);
+    } /*else {
 
       if (switch_states[i]) {
         switch_states[i] = false;
       }
-    }
+    }*/
   }
   
   /*if (digitalRead(mic_switch) == LOW) {
