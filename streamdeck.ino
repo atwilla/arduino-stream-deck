@@ -5,7 +5,8 @@ const int num_switches = 2, num_btns = 10;
 
 const int switches[] = {2, 3};
 bool switch_states[] = {HIGH, HIGH};
-bool btn_states[10] = {HIGH};
+bool btn_states[num_btns] = {HIGH};
+int btn_result;
 
 const int btns[] = {4, 5, 6, 7, 8, 9, 10, 16, 14, 15};
 Keystroke *switch_strokes[num_switches], *btn_strokes[num_btns];
@@ -57,37 +58,38 @@ void setup() {
 
 void loop() {
 
+  // Check switches.
   for (int i = 0; i < num_switches; i++) {
 
     if ((digitalRead(switches[i]) == LOW && switch_states[i] == HIGH) || (digitalRead(switches[i]) == HIGH && switch_states[i] == LOW)) {
       switch_states[i] = !switch_states[i];
       toggle_input(switch_strokes[i]->keys_array, switch_strokes[i]->num_keys);
       delay(170);
-    } /*else {
-
-      if (switch_states[i]) {
-        switch_states[i] = false;
-      }
-    }*/
+    }
   }
 
-  // for loop for button inputs here
-
+  // Check btns.
   for (int i = 0; i < num_btns; i++) {
+    btn_result = digitalRead(btns[i]);
 
-    if (!digitalRead(btns[i])) {
+    if (btn_result != btn_states[i]) {
 
-      for (int j = 0; j < btn_strokes[i]->num_keys; j++) {
-        Keyboard.press(btn_strokes[i]->keys_array[j]);
+      if (btn_result == LOW) {
+
+        for (int j = 0; j < btn_strokes[i]->num_keys; j++) {
+          Keyboard.press(btn_strokes[i]->keys_array[j]);
+        }
+        delay(10);
+        
+      } else {
+
+        for (int j = 0; j < btn_strokes[i]->num_keys; j++) {
+          Keyboard.release(btn_strokes[i]->keys_array[j]);
+        }
+
       }
 
-      delay(170);
-      
-    } else {
-
-      for (int j = 0; j < btn_strokes[i]->num_keys; j++) {
-        Keyboard.release(btn_strokes[i]->keys_array[j]);
-      }
+      btn_states[i] = !btn_states[i];
     }
   }
 
