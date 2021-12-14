@@ -1,0 +1,3 @@
+[submodule "Arduino-Projects"]
+	path = Arduino-Projects
+	url = https://github.com/atwilla/Arduino-Projects
